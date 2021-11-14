@@ -1,0 +1,1 @@
+python $(Resolve-Path $(Join-Path $PSScriptRoot 'remove-empty-directories.py')) @args
