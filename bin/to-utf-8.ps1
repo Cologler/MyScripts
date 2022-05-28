@@ -10,7 +10,7 @@ param (
 if (!$OutPath) {
     $dirname = [System.IO.Path]::GetDirectoryName($InPath)
     $prefix = [System.IO.Path]::GetFileNameWithoutExtension($InPath);
-    $suffix = [System.IO.Path]::GetExtension($InPath);
+    $suffix = [System.IO.Path]::GetExtension($InPath).ToLower();
     $OutPath = "$dirname\$prefix.utf-8$suffix";
 }
 
@@ -23,5 +23,6 @@ function Get-Encoding {
 
 $encoding = Get-Encoding
 if ($encoding) {
+    Write-Output "Detected encoding: $encoding"
     iconv -f $encoding -t 'utf-8' -o $OutPath $InPath
 }
