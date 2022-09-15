@@ -36,5 +36,6 @@ $Files
 | ForEach-Object {
     foreach ($oldItem in [Enumerable]::Take($_.Group, $_.Count - 1)) {
         Remove-Item -Path $oldItem.Path
+        Write-Output "Removed $($oldItem.Path)"
     }
 }
