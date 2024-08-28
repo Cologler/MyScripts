@@ -14,7 +14,7 @@ $Files | ForEach-Object { $FilesSet.Add($_.Name) } | Out-Null
 
 $Files
 | ForEach-Object {
-    if ($_.Name -match "^(?<app>.+)#(?<ver>.+)#http.+$") {
+    if ($_.Name -match "^(?<app>.+)#(?<ver>.+)#.+$") {
         if (!$FilesSet.Contains($_.Name + '.aria2')) {
             $app = $Matches.app
             $ver = $Matches.ver
