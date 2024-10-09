@@ -1,0 +1,1 @@
+Invoke-RestMethod 'https://api6.ipify.org'
