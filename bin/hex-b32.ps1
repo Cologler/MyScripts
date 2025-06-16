@@ -11,5 +11,5 @@ param (
 )
 
 process {
-     $str | busybox xxd -r -p | busybox base32
+    $str | busybox xxd -r -p | busybox base32
 }
