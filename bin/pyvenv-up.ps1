@@ -51,16 +51,23 @@ function Upgrade-Venv([string] $VenvPath) {
     python -m venv --upgrade $VenvPath
 }
 
-$VenvPath = Get-VenvPath
-
-if (!(Test-VenvPath $VenvPath)) {
-    Init-Venv $VenvPath
-}
-else {
-    $cfg = Read-VenvCfg $VenvPath
-    if (!(Test-Path $cfg['home'])) {
-        Upgrade-Venv $VenvPath
+& {
+    if ($env:VIRTUAL_ENV) {
+        Write-Host "Virtual environment already activated: $env:VIRTUAL_ENV"
+        return
     }
-}
 
-Invoke-Expression "$VenvPath/Scripts/Activate.ps1"
+    $VenvPath = Get-VenvPath
+
+    if (!(Test-VenvPath $VenvPath)) {
+        Init-Venv $VenvPath
+    }
+    else {
+        $cfg = Read-VenvCfg $VenvPath
+        if (!(Test-Path $cfg['home'])) {
+            Upgrade-Venv $VenvPath
+        }
+    }
+
+    Invoke-Expression "$VenvPath/Scripts/Activate.ps1"
+}
