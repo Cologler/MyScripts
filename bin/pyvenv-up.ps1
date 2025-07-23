@@ -44,10 +44,12 @@ function Read-VenvCfg([string] $VenvPath) {
 }
 
 function Init-Venv([string] $VenvPath) {
+    Write-Host "Creating virtual environment at $VenvPath" -ForegroundColor Green
     python -m venv --upgrade-deps $VenvPath
 }
 
 function Upgrade-Venv([string] $VenvPath) {
+    Write-Host "Upgrading virtual environment at $VenvPath" -ForegroundColor Green
     python -m venv --upgrade $VenvPath
 }
 
