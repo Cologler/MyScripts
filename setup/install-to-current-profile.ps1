@@ -4,8 +4,10 @@ param (
 
 $profileToWrite = if ($AllHosts) { $profile.CurrentUserAllHosts } else { $profile }
 
-$binPath = Resolve-Path "$PSScriptRoot\..\bin"
-$body = `
-"`$env:Path = '$binPath;' + `$env:Path;";
+$installShellScriptPath = Resolve-Path "$PSScriptRoot\install-to-current-shell.ps1"
+
+'# add MyScripts' >> $profileToWrite
+$body = "& `'$installShellScriptPath`'"
 $body >> $profileToWrite
+
 Write-Host "Written to $profileToWrite"
