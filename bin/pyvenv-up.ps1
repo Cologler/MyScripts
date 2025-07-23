@@ -1,6 +1,17 @@
-# startup python venv environement
-# - If not create, create it;
-# - If upgrade required, upgrade it;
+<#
+.SYNOPSIS
+    startup python venv environement
+.DESCRIPTION
+    This script checks if a Python virtual environment exists in the current directory.
+    If it does not exist, it creates a new virtual environment.
+    If it exists but requires an upgrade, it upgrades the existing virtual environment.
+    Finally, it activates the virtual environment.
+#>
+
+[CmdletBinding()]
+param (
+
+)
 
 function Read-VenvCfg([string] $VenvPath) {
     $cfg = @{}
