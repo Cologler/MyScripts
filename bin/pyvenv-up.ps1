@@ -13,6 +13,26 @@ param (
 
 )
 
+function Test-VenvPath {
+    param (
+        [string] $Path
+    )
+
+    return (Test-Path -PathType Container $Path) -and (Test-Path -PathType Leaf "$Path/pyvenv.cfg")
+}
+
+function Get-VenvPath() {
+    if (Test-VenvPath -Path '.venv') {
+        return '.venv'
+    }
+
+    if (Test-Path -PathType Leaf 'poetry.lock') {
+        return $(poetry env info -p)
+    }
+
+    return '.venv'
+}
+
 function Read-VenvCfg([string] $VenvPath) {
     $cfg = @{}
     Get-Content "$VenvPath/pyvenv.cfg"
@@ -31,14 +51,16 @@ function Upgrade-Venv([string] $VenvPath) {
     python -m venv --upgrade $VenvPath
 }
 
-$VenvPath = '.venv'
+$VenvPath = Get-VenvPath
 
-if (!(Test-Path $VenvPath)) {
+if (!(Test-VenvPath $VenvPath)) {
     Init-Venv $VenvPath
-} else {
+}
+else {
     $cfg = Read-VenvCfg $VenvPath
     if (!(Test-Path $cfg['home'])) {
         Upgrade-Venv $VenvPath
     }
 }
+
 Invoke-Expression "$VenvPath/Scripts/Activate.ps1"
