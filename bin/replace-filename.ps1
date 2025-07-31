@@ -7,7 +7,7 @@ param (
     [Parameter(Position=0, Mandatory=$true)]
     [string] $FromValue,
 
-    [Parameter(Position=1, Mandatory=$true)]
+    [Parameter(Position=1)]
     [string] $ToValue,
 
     [Parameter(ValueFromPipeline = $true)]
