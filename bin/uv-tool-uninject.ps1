@@ -23,6 +23,11 @@ param (
         exit 1
     }
 
+    if (!($toolInfo.with -contains $Package)) {
+        Write-Error "No with match $package"
+        exit 1
+    }
+
     $command = New-Object System.Collections.Generic.List[string]
 
     $command.Add('uv.exe')
@@ -30,10 +35,13 @@ param (
     $command.Add('install')
     $command.Add($Tool)
 
-    foreach ($pkg in $toolInfo.with + $Package) {
-        $command.Add('--with')
-        $command.Add($pkg)
+    foreach ($pkg in $toolInfo.with) {
+        if ($pkg -ne $Package) {
+            $command.Add('--with')
+            $command.Add($pkg)
+        }
     }
 
     & $command[0] @($command[1..($command.Count - 1)])
 }
+
