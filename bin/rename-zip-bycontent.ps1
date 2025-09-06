@@ -55,6 +55,10 @@ process {
             if ($topNames.Count -eq 0) { continue }
 
             $prefix = Get-CommonPrefix $topNames
+            if ($prefix -match '^(.*\.S\d{2,})E\d*$') {
+                $prefix = $matches[1]
+            }
+
             $suffix = Get-CommonSuffix $topNames
             $base   = ($prefix + $suffix)
             if ($base) {
