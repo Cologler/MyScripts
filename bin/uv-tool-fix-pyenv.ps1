@@ -21,20 +21,8 @@ param ()
             $cfgContent = Parse-PyvenvCfg -cfgPath $cfgPath
 
             if (-not (Test-Path $cfgContent.home)) {
-                $command = New-Object System.Collections.Generic.List[string]
-
-                $command.Add('uv.exe')
-                $command.Add('tool')
-                $command.Add('install')
-                $command.Add('--force')
-                $command.Add($toolInfo.tool)
-
-                foreach ($pkg in $toolInfo.with) {
-                    $command.Add('--with')
-                    $command.Add($pkg)
-                }
-
-                & $command[0] @($command[1..($command.Count - 1)])
+                $receipt = Get-Content (Join-Path $uvToolDir $toolInfo.tool 'uv-receipt.toml') | ConvertFrom-Toml
+                UvToolInstallFromReceipt -ToolName $toolInfo.tool -Receipt $receipt -Force
             }
             else {
                 Write-Host "Skipping '$($toolInfo.tool)': home path exists: $($cfgContent.home)"
