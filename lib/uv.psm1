@@ -52,24 +52,51 @@ function UvToolInstall {
         $Withs,
 
         [switch]
-        $Force
+        $Force,
+
+        [switch]
+        $Reinstall
+        ,
+
+        [switch]
+        $OutText
     )
 
-    $command = New-Object System.Collections.Generic.List[string]
+    $cmdExec = 'uv.exe'
+    $cmdArgs = New-Object System.Collections.Generic.List[string]
 
-    $command.Add('uv.exe')
-    $command.Add('tool')
-    $command.Add('install')
+    $cmdArgs.Add('tool')
+    $cmdArgs.Add('install')
+    if ($Reinstall) {
+        $cmdArgs.Add('--reinstall')
+    }
     if ($Force) {
-        $command.Add('--force')
+        $cmdArgs.Add('--force')
     }
-    $command.Add($Tool)
+    $cmdArgs.Add($Tool)
     foreach ($pkg in $Withs) {
-        $command.Add('--with')
-        $command.Add($pkg)
+        $cmdArgs.Add('--with')
+        $cmdArgs.Add($pkg)
     }
 
-    & $command[0] @($command[1..($command.Count - 1)])
+    function Get-ArgText([string] $s) {
+        if ($null -eq $s) { return '' }
+        # Display-oriented quoting only.
+        if ($s -match '\s') {
+            return '"' + ($s -replace '"', '\"') + '"'
+        }
+        return $s
+    }
+
+    $cmdArgsText = ($cmdArgs | ForEach-Object { Get-ArgText $_ }) -join ' '
+    Write-Host "#> $cmdExec $cmdArgsText" -ForegroundColor Cyan
+
+    if ($OutText) {
+        Write-Output "$cmdExec $cmdArgsText"
+    }
+    else {
+        & $cmdExec @cmdArgs
+    }
 }
 
 function UvToolInstallFromReceipt {
@@ -82,7 +109,13 @@ function UvToolInstallFromReceipt {
         $Receipt,
 
         [switch]
-        $Force
+        $Force,
+
+        [switch]
+        $Reinstall,
+
+        [switch]
+        $OutText
     )
 
     $tool = $Receipt.tool.requirements | Where-Object { $_.name -eq $ToolName }
@@ -103,7 +136,9 @@ function UvToolInstallFromReceipt {
     UvToolInstall `
         -Tool (Get-PackageInstallLocation $tool) `
         -Withs ($withs | ForEach-Object { Get-PackageInstallLocation $_ }) `
-        -Force:$Force
+        -Force:$Force `
+        -Reinstall:$Reinstall `
+        -OutText:$OutText
 }
 
 function Get-UvToolDir {
