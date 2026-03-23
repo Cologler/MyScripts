@@ -55,8 +55,10 @@ function Invoke-UvToolInstall {
         $Force,
 
         [switch]
-        $Reinstall
-        ,
+        $Reinstall,
+
+        [string]
+        $Python,
 
         [switch]
         $OutText
@@ -72,6 +74,10 @@ function Invoke-UvToolInstall {
     }
     if ($Force) {
         $cmdArgs.Add('--force')
+    }
+    if ($Python) {
+        $cmdArgs.Add('--python')
+        $cmdArgs.Add($Python)
     }
     $cmdArgs.Add($Tool)
     foreach ($pkg in $Withs) {
@@ -133,12 +139,19 @@ function Invoke-UvToolInstallFromReceipt {
         }
     }
 
-    Invoke-UvToolInstall `
-        -Tool (Get-PackageInstallLocation $tool) `
-        -Withs ($withs | ForEach-Object { Get-PackageInstallLocation $_ }) `
-        -Force:$Force `
-        -Reinstall:$Reinstall `
-        -OutText:$OutText
+    $invokeParams = @{
+        Tool      = Get-PackageInstallLocation $tool
+        Withs     = $withs | ForEach-Object { Get-PackageInstallLocation $_ }
+        Force     = $Force
+        Reinstall = $Reinstall
+        OutText   = $OutText
+    }
+
+    if ($Receipt.tool.python) {
+        $invokeParams.Python = $Receipt.tool.python
+    }
+
+    Invoke-UvToolInstall @invokeParams
 }
 
 function Get-UvToolDir {
