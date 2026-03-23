@@ -42,7 +42,7 @@ function Parse-PyvenvCfg {
     return $result
 }
 
-function UvToolInstall {
+function Invoke-UvToolInstall {
     param (
         [Parameter(Mandatory = $true)]
         [string]
@@ -99,7 +99,7 @@ function UvToolInstall {
     }
 }
 
-function UvToolInstallFromReceipt {
+function Invoke-UvToolInstallFromReceipt {
     param (
         [Parameter(Mandatory = $true)]
         [string]
@@ -133,7 +133,7 @@ function UvToolInstallFromReceipt {
         }
     }
 
-    UvToolInstall `
+    Invoke-UvToolInstall `
         -Tool (Get-PackageInstallLocation $tool) `
         -Withs ($withs | ForEach-Object { Get-PackageInstallLocation $_ }) `
         -Force:$Force `

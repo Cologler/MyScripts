@@ -57,7 +57,7 @@ param (
             }
         }
 
-        UvToolInstallFromReceipt -ToolName $toolName -Receipt $receipt -Reinstall:$effectiveReinstall `
+        Invoke-UvToolInstallFromReceipt -ToolName $toolName -Receipt $receipt -Reinstall:$effectiveReinstall `
             -OutText:$OutText
     }
 }

@@ -19,7 +19,7 @@ param ()
 
             if (-not (Test-Path $cfgContent.home)) {
                 $receipt = Get-Content (Join-Path $uvToolDir $toolInfo.tool 'uv-receipt.toml') | ConvertFrom-Toml
-                UvToolInstallFromReceipt -ToolName $toolInfo.tool -Receipt $receipt -Force
+                Invoke-UvToolInstallFromReceipt -ToolName $toolInfo.tool -Receipt $receipt -Force
             }
             else {
                 Write-Host "Skipping '$($toolInfo.tool)': home path exists: $($cfgContent.home)"
