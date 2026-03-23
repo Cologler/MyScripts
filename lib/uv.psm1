@@ -95,12 +95,12 @@ function Invoke-UvToolInstall {
     }
 
     $cmdArgsText = ($cmdArgs | ForEach-Object { Get-ArgText $_ }) -join ' '
-    Write-Host "#> $cmdExec $cmdArgsText" -ForegroundColor Cyan
 
     if ($OutText) {
         Write-Output "$cmdExec $cmdArgsText"
     }
     else {
+        Write-Host "#> $cmdExec $cmdArgsText" -ForegroundColor Cyan
         & $cmdExec @cmdArgs
     }
 }
