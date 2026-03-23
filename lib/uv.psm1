@@ -105,3 +105,36 @@ function UvToolInstallFromReceipt {
         -Withs ($withs | ForEach-Object { Get-PackageInstallLocation $_ }) `
         -Force:$Force
 }
+
+function Get-UvTools {
+    param (
+    )
+
+    $uvToolDir = uv tool dir 2>$null
+    if (-not $uvToolDir -or -not (Test-Path $uvToolDir)) {
+        throw "uv tool dir did not return a valid path: $uvToolDir"
+    }
+
+    $tools = @()
+    uv tool list --show-with --show-extras | ForEach-Object {
+        if ($_ -match '^-') {
+            # execute program name
+            return
+        }
+
+        $toolInfo = Parse-UvToolList $_
+        if ($toolInfo) {
+            $cfgPath = Join-Path $uvToolDir $toolInfo.tool 'pyvenv.cfg'
+            $cfgContent = Parse-PyvenvCfg -cfgPath $cfgPath
+
+            $tools += [pscustomobject]@{
+                Tool    = $toolInfo.tool
+                Version = $toolInfo.version
+                With    = $toolInfo.with -join ', '
+                Home    = $cfgContent.home
+                PythonVersion = $cfgContent.version_info
+            }
+        }
+    }
+    return $tools
+}
