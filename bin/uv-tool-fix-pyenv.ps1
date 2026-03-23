@@ -4,10 +4,7 @@ param ()
 & {
     Import-Module (Join-Path $PSScriptRoot '..' 'lib' 'uv.psm1') -Scope Local
 
-    $uvToolDir = uv tool dir 2>$null
-    if (-not $uvToolDir -or -not (Test-Path $uvToolDir)) {
-        throw "uv tool dir did not return a valid path: $uvToolDir"
-    }
+    $uvToolDir = Get-UvToolDir
 
     uv tool list --show-with --show-extras | ForEach-Object {
         if ($_ -match '^-') {

@@ -106,14 +106,20 @@ function UvToolInstallFromReceipt {
         -Force:$Force
 }
 
-function Get-UvTools {
-    param (
-    )
-
+function Get-UvToolDir {
     $uvToolDir = uv tool dir 2>$null
     if (-not $uvToolDir -or -not (Test-Path $uvToolDir)) {
         throw "uv tool dir did not return a valid path: $uvToolDir"
     }
+
+    return $uvToolDir
+}
+
+function Get-UvTools {
+    param (
+    )
+
+    $uvToolDir = Get-UvToolDir
 
     $tools = @()
     uv tool list --show-with --show-extras | ForEach-Object {
