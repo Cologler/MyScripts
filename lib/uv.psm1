@@ -134,9 +134,14 @@ function Invoke-UvToolInstallFromReceipt {
         elseif ($requirement.directory) {
             return "file:///$($requirement.directory)"
         }
-        else {
+        elseif ($requirement.name) {
+            if ($requirement.specifier) {
+                return $requirement.name + $requirement.specifier
+            }
             return $requirement.name
         }
+
+        throw "Unsupported requirement type: $($requirement | ConvertTo-Json -Depth 5)"
     }
 
     $invokeParams = @{
